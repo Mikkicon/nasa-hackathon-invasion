@@ -617,7 +617,7 @@ def create_comprehensive_dataset(combined_gdf, roads_gdf, structures_gdf, sd_sum
 
 
 def main():
-    st.title("Russian Military Presence and Terrain Analysis in Sumsk Oblast and Kiev Zone")
+    st.title("Invasiveness of border sections")
 
     # Load data
     gdf = load_convoy_data()
@@ -726,31 +726,31 @@ def main():
     if 'pred_map' not in st.session_state:
         st.session_state.pred_map, pred_map_filename = create_prediction_map(map_data, results_gdf)
     
-    with pred_map_placeholder.container():
-        st.subheader("Prediction Map")
-        print('st.session_state.pred_map is not None', st.session_state.pred_map is not None)
-        if st.session_state.pred_map is not None:
-            components.html(
-                f"""
-                <div id="pred_map-container"></div>
-                <script>
-                    function loadPredMap() {{
-                        try {{
-                            var pred_mapContent = {open(pred_map_filename, 'r').read()};
-                            document.getElementById('pred_map-container').innerHTML = pred_mapContent;
-                        }} catch (error) {{
-                            console.error('Error loading pred_map:', error);
-                            document.getElementById('pred_map-container').innerHTML = 'Error loading pred_map. Please check the console for details.';
-                        }}
-                    }}
-                    loadPredMap();
-                </script>
-                """,
-                height=800
-            )
-            st.success(f"Map saved to {map_filename}")
-        else:
-            st.error("Failed to create the map. Please check the logs for more information.")
+    # with pred_map_placeholder.container():
+    #     st.subheader("Prediction Map")
+    #     print('st.session_state.pred_map is not None', st.session_state.pred_map is not None)
+    #     if st.session_state.pred_map is not None:
+    #         components.html(
+    #             f"""
+    #             <div id="pred_map-container"></div>
+    #             <script>
+    #                 function loadPredMap() {{
+    #                     try {{
+    #                         var pred_mapContent = {open(pred_map_filename, 'r').read()};
+    #                         document.getElementById('pred_map-container').innerHTML = pred_mapContent;
+    #                     }} catch (error) {{
+    #                         console.error('Error loading pred_map:', error);
+    #                         document.getElementById('pred_map-container').innerHTML = 'Error loading pred_map. Please check the console for details.';
+    #                     }}
+    #                 }}
+    #                 loadPredMap();
+    #             </script>
+    #             """,
+    #             height=800
+    #         )
+    #         st.success(f"Map saved to {map_filename}")
+    #     else:
+    #         st.error("Failed to create the map. Please check the logs for more information.")
 
     # Perform terrain analysis
     with analysis_placeholder.container():
@@ -838,5 +838,11 @@ def display_additional_info(combined_gdf, sumsk_infrastructure_gdf, kiev_infrast
     numeric_columns = comprehensive_dataset.select_dtypes(include=[np.number]).columns
     correlation_matrix = comprehensive_dataset[numeric_columns].corr()
     st.write(correlation_matrix)
+    st.image("bboxes.png", caption="Bounding Boxes", use_column_width=True)
+    st.image("spotted-rus-military.png", caption="Spotted Russian Military", use_column_width=True)
+    st.image("crossings.png", caption="Crossings", use_column_width=True)
+    st.image("military-on-borders.png", caption="Military on Borders", use_column_width=True)
+    st.image("violence.png", caption="Violence", use_column_width=True)
+    st.image("corr_heatmap.png", caption="Correlation Heatmap", use_column_width=True)
 if __name__ == "__main__":
     main()
